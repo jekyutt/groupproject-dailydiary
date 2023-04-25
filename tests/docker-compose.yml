@@ -1,0 +1,38 @@
+version: '3.7'
+services:
+  postgres:
+    image: postgres:13.2-alpine
+    container_name: api_db
+    environment:
+      - POSTGRES_PASSWORD=parool
+    networks:
+      - pg_net
+  back_end:
+    image: ${ITB1704_REGISTRY}/${ITB1704_REGISTRY_USER}/back-end:${CI_COMMIT_SHA}
+    container_name: back_end
+    depends_on:
+      - postgres
+    networks:
+      - pg_net
+      - api_net
+    links:
+      - "postgres:ddiary"
+    volumes:
+      - ./startup:/etc/startup
+    entrypoint: ["/etc/startup/wait-for", "-t", "30", "ddiary:5432", "--", "dotnet", "/app/DailyDiary.dll"]
+  newman:
+    image: postman/newman:alpine
+    entrypoint: ["/etc/startup/wait-for", "-t", "30", "back_end:80", "--", "newman"]
+    container_name: newman
+    depends_on:
+      - postgres
+      - back_end
+    network_mode: "service:back_end"
+    volumes:
+      - ./newman:/etc/newman
+      - ./startup:/etc/startup
+    command: run /etc/newman/DailyDiaryTests.postman_collection.json -e DailyDiaryTests.postman_environment.json
+networks:
+  pg_net:
+  api_net:
+

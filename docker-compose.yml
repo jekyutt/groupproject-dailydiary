@@ -1,0 +1,46 @@
+version: "3.7"
+services:
+  postgres:
+    image: postgres:13.2-alpine
+    #    volumes:
+    #    - postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=parool
+    networks:
+      - internal
+    restart: on-failure:5
+  pgadmin4:
+    image: dpage/pgadmin4:4.30
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=user@domain.com
+      - PGADMIN_DEFAULT_PASSWORD=Secret
+    networks:
+      - nginx-network
+      - internal
+    links:
+      - "postgres:ddiary"
+    restart: on-failure:5
+  front-end:
+    image: ${ITB1704_REGISTRY}/${ITB1704_REGISTRY_USER}/front-end:${CI_COMMIT_SHA}
+    networks:
+      - nginx-network
+    restart: on-failure:5
+  back-end:
+    image: ${ITB1704_REGISTRY}/${ITB1704_REGISTRY_USER}/back-end:${CI_COMMIT_SHA}
+    networks:
+      - nginx-network
+      - internal
+    links:
+      - "postgres:ddiary"
+    depends_on:
+      - postgres
+    restart: on-failure:5
+networks:
+  nginx-network:
+    external: true
+  internal:
+volumes:
+  #  postgres-data:
+  pgadmin-data:

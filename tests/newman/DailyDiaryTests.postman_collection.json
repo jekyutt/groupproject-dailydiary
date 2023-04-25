@@ -1,0 +1,1869 @@
+﻿{
+	"info": {
+		"_postman_id": "7ee5b964-b58c-4cbe-acf8-d1c1773668cc",
+		"name": "DailyDiary Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Registration / Authentication",
+			"item": [
+				{
+					"name": "Correct Registration",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"test\",\r\n  \"email\": \"test@test.test\",\r\n  \"password\": \"Test1!\",\r\n  \"firstname\": \"TestName\",\r\n  \"lastname\": \"TestLastName\",\r\n  \"birthDate\": \"2021-05-06T19:41:57.211Z\",\r\n  \"phoneNumber\": \"123456789\",\r\n  \"bio\": \"TestBio\",\r\n  \"avatarLink\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/AuthManagement/Register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"AuthManagement",
+								"Register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Registration: already existing email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Receive bad request code - 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Did not receive token\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.token).to.eql(null);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error received - Email already exist \", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.errors[0]).to.eql(\"Email already exist\");\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"testsuka1\",\r\n  \"email\": \"test@test.test\",\r\n  \"password\": \"Test1!\",\r\n  \"firstname\": \"TestName\",\r\n  \"lastname\": \"TestLastName\",\r\n  \"birthDate\": \"2021-05-06T19:41:57.211Z\",\r\n  \"phoneNumber\": \"123456789\",\r\n  \"bio\": \"TestBio\",\r\n  \"avatarLink\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/AuthManagement/Register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"AuthManagement",
+								"Register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Registration: In username invalid symbols",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Receive Bad Request code - 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Did not receive token\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.token).to.eql(null);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error received - Email already exist \", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.errors[0]).to.eql(\"Username \\'testgjklä\\' is invalid, can only contain letters or digits.\");\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"testgjklä\",\r\n  \"email\": \"different{{$randomInt}}@test.test\",\r\n  \"password\": \"Test1!\",\r\n  \"firstname\": \"TestName\",\r\n  \"lastname\": \"TestLastName\",\r\n  \"birthDate\": \"2021-05-06T19:41:57.211Z\",\r\n  \"phoneNumber\": \"123456789\",\r\n  \"bio\": \"TestBio\",\r\n  \"avatarLink\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/AuthManagement/Register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"AuthManagement",
+								"Register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Registration: already existing username",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Receive Bad Request code - 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Did not receive token\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.token).to.eql(null);\r",
+									"});\r",
+									"\r",
+									"pm.environment.set(\"username\", \"test\");\r",
+									"pm.test(\"Error received - Email already exist \", function () {\r",
+									"    \r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.errors[0]).to.eql(\"Username '\"+pm.environment.get(\"username\")+\"' is already taken.\");\r",
+									"})\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"test\",\r\n  \"email\": \"test{{$randomInt}}@test.test\",\r\n  \"password\": \"Test1!\",\r\n  \"firstname\": \"TestName\",\r\n  \"lastname\": \"TestLastName\",\r\n  \"birthDate\": \"2021-05-06T19:41:57.211Z\",\r\n  \"phoneNumber\": \"123456789\",\r\n  \"bio\": \"TestBio\",\r\n  \"avatarLink\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/AuthManagement/Register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"AuthManagement",
+								"Register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Correct Authentication",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"token\", pm.response.json().token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"test@test.test\",\r\n    \"password\": \"Test1!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/AuthManagement/Login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"AuthManagement",
+								"Login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Post story",
+			"item": [
+				{
+					"name": "GET - POST",
+					"item": [
+						{
+							"name": "#2 Check story list - status: 200",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/posts",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"posts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create post with bad image link",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Bad avatarlink is replased with empty\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.imageLink).to.eql(\"\");\r",
+											"});\r",
+											"\r",
+											"pm.environment.set(\"postIds\", pm.response.json().id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"type\": \"Private\",\r\n    \"title\": \"I eat cake{{$randomInt}}\",\r\n    \"text\": \"It's really tasty\",\r\n    \"releaseDate\": \"2021-02-10T00:00:00\",\r\n    \"nsfw\": false,\r\n    \"imageLink\": \"qwertyuiop\",\r\n    \"ownerId\": 2\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/posts/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"posts",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete story with bad avatar link",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 204\", function () {\r",
+											"    pm.response.to.have.status(204);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/posts/{{postIds}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"posts",
+										"{{postIds}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "#2 Create story - status: 201",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.environment.set(\"postIds\", pm.response.json().id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"type\": \"Private\",\r\n    \"title\": \"I eat cake{{$randomInt}}\",\r\n    \"text\": \"It's really tasty\",\r\n    \"releaseDate\": \"2021-02-10T00:00:00\",\r\n    \"nsfw\": false,\r\n    \"imageLink\": \"https://images.unsplash.com/photo-1542826438-bd32f43d626f?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1156&q=80\",\r\n    \"ownerId\": 2\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/posts/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"posts",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "PATCH",
+					"item": [
+						{
+							"name": "#44 Post text change",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Check if text with sid is It`s not good\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.text).to.eql(\"It`s not good\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n  {\r\n    \"op\":\"replace\",\r\n    \"path\":\"/text\",\r\n    \"value\": \"It`s not good\"\r\n  }\r\n]\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/posts/{{postIds}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"posts",
+										"{{postIds}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "#39 Edit story prefernce",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Bio changed1\", function () {\r",
+											"    const response = pm.response.json();\r",
+											"    pm.expect(response.type).to.be.equal(1);\r",
+											"});\r",
+											"pm.test(\"Bio changed2\", function () {\r",
+											"    const response = pm.response.json();\r",
+											"    pm.expect(response.type).not.be.equal(0);\r",
+											"});\r",
+											"pm.test(\"Bio changed3\", function () {\r",
+											"    const response = pm.response.json();\r",
+											"    pm.expect(response.type).to.not.be.undefined;\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n  {\r\n    \"op\":\"replace\",\r\n    \"path\":\"/type\",\r\n    \"value\": \"1\"\r\n  }\r\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/posts/{{postIds}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"posts",
+										"{{postIds}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Post title change",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Check if text with sid is It`s not good\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.text).to.eql(\"It`s not good\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n  {\r\n    \"op\":\"replace\",\r\n    \"path\":\"/text\",\r\n    \"value\": \"It`s not good\"\r\n  }\r\n]\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/posts/{{postIds}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"posts",
+										"{{postIds}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Image change",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Check if imageLink with sid changed\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.imageLink).to.eql(\"https://images.unsplash.com/photo-2222222222-bd32f43d626f?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1156&q=80\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n  {\r\n    \"op\":\"replace\",\r\n    \"path\":\"/ImageLink\",\r\n    \"value\": \"https://images.unsplash.com/photo-2222222222-bd32f43d626f?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1156&q=80\"\r\n  }\r\n]\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/posts/{{postIds}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"posts",
+										"{{postIds}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "PUT - DELETE",
+					"item": [
+						{
+							"name": "Commented out/ Register user for Post/PUT",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//pm.test(\"Status code is 200\", function () {\r",
+											"//    pm.response.to.have.status(200);\r",
+											"//});\r",
+											"\r",
+											"pm.environment.set(\"putUserIds\", pm.response.json().id);\r",
+											"\r",
+											"let response = pm.response.json();\r",
+											"savedData = JSON.stringify(response);\r",
+											"pm.environment.set(\"savedData\", savedData)"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"userName\": \"UserForPut\",\r\n  \"email\": \"userforput{{randomInt}}@test.test\",\r\n  \"password\": \"Test1!\",\r\n  \"firstname\": \"PutTestName\",\r\n  \"lastname\": \"PutLastName\",\r\n  \"birthDate\": \"2021-05-06T19:41:57.211Z\",\r\n  \"phoneNumber\": \"123456789\",\r\n  \"bio\": \"TestBio\",\r\n  \"avatarLink\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/AuthManagement/Register",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"AuthManagement",
+										"Register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get UserForPut",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.environment.set(\"putUserIds\", pm.response.json().id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/Users?username=UserForPut",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Users"
+									],
+									"query": [
+										{
+											"key": "username",
+											"value": "UserForPut"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Change post",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"\r",
+											"    pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"type\": \"Private\",\r\n    \"title\": \"Title has change with PUT request\",\r\n    \"text\": \"It's really tasty\",\r\n    \"releaseDate\": \"2021-02-10T00:00:00\",\r\n    \"nsfw\": false,\r\n    \"imageLink\": \"https://images.unsplash.com/photo-1542826438-bd32f43d626f?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1156&q=80\",\r\n    \"ownerId\": 2\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/Posts/{{postIds}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Posts",
+										"{{postIds}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "#1 Delete story - status: 204",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 204\", function () {\r",
+											"    pm.response.to.have.status(204);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/posts/{{postIds}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"posts",
+										"{{postIds}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "#1 Delete story - can't delete twice",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is not 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/posts/{{postIds}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"posts",
+										"{{postIds}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "GET - POST",
+					"item": [
+						{
+							"name": "Check user list",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/users",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.environment.set(\"userIds\", pm.response.json().id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"userName\": \"Testovk{{$randomInt}}\",\r\n  \"email\": \"ilfrujkhugj.khgfyfhtyye{{$randomInt}}@ttu.ee\",\r\n  \"password\": \"Test1!\",\r\n  \"firstname\": \"Testov\",\r\n  \"lastname\": \"Testovi\",\r\n  \"birthDate\": \"2021-04-06T19:49:02.915Z\",\r\n  \"phoneNumber\": \"+37256686868\",\r\n  \"bio\": \"lololo\",\r\n  \"avatarLink\": \"https://images.unsplash.com/photo-1520078452277-0832598937e5?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/users",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create user with NO avatar link",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"pm.test(\"Empty avatarlink is replased with default one\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.avatarLink).to.eql(\"https://i.imgur.com/0pNBFeA.png\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"username\": \"Testovk{{$randomInt}}\",\r\n  \"email\": \"ilfrujkhugj.khgfyfhtyye{{$randomInt}}@ttu.ee\",\r\n  \"password\": \"Test1!\",\r\n  \"firstname\": \"Testov\",\r\n  \"lastname\": \"Testovi\",\r\n  \"birthDate\": \"2021-04-06T19:49:02.915Z\",\r\n  \"phoneNumber\": \"+37256686868\",\r\n  \"bio\": \"lololo\",\r\n  \"avatarLink\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/users",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create user with BAD avatar link",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Bad avatarlink is replased with default one\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.avatarLink).to.eql(\"https://i.imgur.com/0pNBFeA.png\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"username\": \"Testovk{{$randomInt}}\",\r\n  \"email\": \"ilfrujkhugj.khgfyfhtyye{{$randomInt}}@ttu.ee\",\r\n  \"password\": \"Test1!\",\r\n  \"firstname\": \"Testov\",\r\n  \"lastname\": \"Testovi\",\r\n  \"birthDate\": \"2021-04-06T19:49:02.915Z\",\r\n  \"phoneNumber\": \"+37256686868\",\r\n  \"bio\": \"lololo\",\r\n  \"avatarLink\": \"qwertyuiop\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/users",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "PATCH",
+					"item": [
+						{
+							"name": "#33 Edit email",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Bio changed\", function () {\r",
+											"    const response = pm.response.json();\r",
+											"    pm.expect(response.email).to.be.equal(\"testpatch@ttu.ee\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n  {\r\n    \"op\":\"replace\",\r\n    \"path\":\"/email\",\r\n    \"value\": \"testpatch@ttu.ee\"\r\n  }\r\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/users/{{userIds}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"users",
+										"{{userIds}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "#33 Edit firstname",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Firsname changed\", function () {\r",
+											"    const response = pm.response.json();\r",
+											"    pm.expect(response.firstname).to.be.equal(\"Nik\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n  {\r\n    \"op\":\"replace\",\r\n    \"path\":\"/firstname\",\r\n    \"value\": \"Nik\"\r\n  }\r\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/users/{{userIds}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"users",
+										"{{userIds}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "#33 Edit lastname",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Lastname changed\", function () {\r",
+											"    const response = pm.response.json();\r",
+											"    pm.expect(response.lastname).to.be.equal(\"Test\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n  {\r\n    \"op\":\"replace\",\r\n    \"path\":\"/lastname\",\r\n    \"value\": \"Test\"\r\n  }\r\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/users/{{userIds}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"users",
+										"{{userIds}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "#34 Edit Username",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Username changed\", function () {\r",
+											"    const response = pm.response.json();\r",
+											"    pm.expect(response.userName).to.be.equal(\"TestPatch2\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n  {\r\n    \"op\":\"replace\",\r\n    \"path\":\"/username\",\r\n    \"value\": \"TestPatch2\"\r\n  }\r\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/users/1",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"users",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "#35 Edit birthdate",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Bio changed\", function () {\r",
+											"    const response = pm.response.json();\r",
+											"    pm.expect(response.birthDate).to.be.equal(\"2001-10-10T00:00:00\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n  {\r\n    \"op\":\"replace\",\r\n    \"path\":\"/birthDate\",\r\n    \"value\": \"2001-10-10T00:00:00\"\r\n  }\r\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/users/{{userIds}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"users",
+										"{{userIds}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "#33 Edit phone number",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Bio changed\", function () {\r",
+											"    const response = pm.response.json();\r",
+											"    pm.expect(response.phoneNumber).to.be.equal(\"+3725432188\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n  {\r\n    \"op\":\"replace\",\r\n    \"path\":\"/phoneNumber\",\r\n    \"value\": \"+3725432188\"\r\n  }\r\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/users/{{userIds}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"users",
+										"{{userIds}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "#36 Edit bio",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Bio changed\", function () {\r",
+											"    const response = pm.response.json();\r",
+											"    pm.expect(response.bio).to.be.equal(\"chicken\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n  {\r\n    \"op\":\"replace\",\r\n    \"path\":\"/bio\",\r\n    \"value\": \"chicken\"\r\n  }\r\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/users/{{userIds}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"users",
+										"{{userIds}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "#36 Edit adult",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Adult changed\", function () {\r",
+											"    const response = pm.response.json();\r",
+											"    pm.expect(response.adult).to.be.equal(true);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n  {\r\n    \"op\":\"replace\",\r\n    \"path\":\"/adult\",\r\n    \"value\": true\r\n  }\r\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/users/{{userIds}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"users",
+										"{{userIds}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "#36 Edit avatar",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Avatar changed\", function () {\r",
+											"    const response = pm.response.json();\r",
+											"    pm.expect(response.avatarLink).to.be.equal(\"https://images.unsplash.com/photo-1520078452277-0832598937e5?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n  {\r\n    \"op\":\"replace\",\r\n    \"path\":\"/avatarLink\",\r\n    \"value\": \"https://images.unsplash.com/photo-1520078452277-0832598937e5?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80\"\r\n  }\r\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/users/{{userIds}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"users",
+										"{{userIds}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "SET - PUT",
+					"item": [
+						{
+							"name": "User put all field",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"    pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"username\": \"Testovik4\",\r\n  \"email\": \"test4@ttu.ee\",\r\n  \"password\": \"Test1!\",\r\n  \"firstname\": \"Testikdd\",\r\n  \"lastname\": \"Testovidd\",\r\n  \"birthDate\": \"2021-03-06T19:49:02.915Z\",\r\n  \"phoneNumber\": \"+37255686868\",\r\n  \"bio\": \"wargin\",\r\n  \"adult\": false,\r\n  \"avatarLink\": \"https://images.unsplash.com/photo-13444444244774-0832598937e5?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/users/{{userIds}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"users",
+										"{{userIds}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET user, set enviroment variables",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"    pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"//pm.test(\"Check if bio with id1 is I'm human!\", function () {\r",
+											"//    var jsonData = pm.response.json();\r",
+											"//    pm.variables.get(\"bioString\");\r",
+											"//});\r",
+											"\r",
+											"\r",
+											"pm.environment.set(\"userIds\", pm.response.json().id);\r",
+											"pm.environment.set(\"firstname\", pm.response.json().firstname);\r",
+											"pm.environment.set(\"lastname\", pm.response.json().lastname);\r",
+											"pm.environment.set(\"bioString\", pm.response.json().bio);\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/users/{{userIds}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"users",
+										"{{userIds}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "#23 Set username",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"    pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Check if username with id1 is test!\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.variables.get(\"username\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n    {\r\n        \"id\": 1,\r\n        \"username\": \"test\",\r\n        \"email\": \"test@ttu.ee\",\r\n        \"firstname\": \"TestFn\",\r\n        \"lastname\": \"TestLn\",\r\n        \"birthDate\": \"2010-10-10T00:00:00\",\r\n        \"phoneNumber\": \"+3725432123\",\r\n        \"bio\": \"I'm human\",\r\n        \"adult\": false,\r\n        \"usersPosts\": null\r\n    }\r\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/users/{{userIds}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"users",
+										"{{userIds}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "#22 Set Contact",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"    pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Check if email with id1 is test@ttu.ee!\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.variables.get(\"email\");\r",
+											"});\r",
+											"pm.test(\"Check if phone number with id1 is +3725432123\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.variables.get(\"phoneNumber\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n    {\r\n        \"id\": 1,\r\n        \"username\": \"test\",\r\n        \"email\": \"test@ttu.ee\",\r\n        \"firstname\": \"TestFn\",\r\n        \"lastname\": \"TestLn\",\r\n        \"birthDate\": \"2010-10-10T00:00:00\",\r\n        \"phoneNumber\": \"+3725432123\",\r\n        \"bio\": \"I'm human\",\r\n        \"adult\": false,\r\n        \"usersPosts\": null\r\n    }\r\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/users/{{userIds}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"users",
+										"{{userIds}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "#24 Set birthdate",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"    pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Check if birthDate with id1 is 2010-10-10T00:00:00\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.variables.get(\"birthDate\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/users/{{userIds}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"users",
+										"{{userIds}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "CRATE USER TWICE + DELETE",
+					"item": [
+						{
+							"name": "Create user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.environment.set(\"userId\", pm.response.json().id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"username\": \"TestUserCreation\",\r\n  \"email\": \"testemail@ttu.ee\",\r\n  \"password\": \"Test1!\",\r\n  \"firstname\": \"Testov\",\r\n  \"lastname\": \"Testovi\",\r\n  \"birthDate\": \"2021-04-06T19:49:02.915Z\",\r\n  \"phoneNumber\": \"+37256686868\",\r\n  \"bio\": \"lololo\",\r\n  \"avatarLink\": \"https://images.unsplash.com/photo-1520078452277-0832598937e5?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/users",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create user twice",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"username\": \"TestUserCreation\",\r\n  \"email\": \"testemail@ttu.ee\",\r\n  \"password\": \"Test1!\",\r\n  \"firstname\": \"Testov\",\r\n  \"lastname\": \"Testovi\",\r\n  \"birthDate\": \"2021-04-06T19:49:02.915Z\",\r\n  \"phoneNumber\": \"+37256686868\",\r\n  \"bio\": \"lololo\",\r\n  \"avatarLink\": \"https://images.unsplash.com/photo-1520078452277-0832598937e5?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/users",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete user from folder",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 204\", function () {\r",
+											"    pm.response.to.have.status(204);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/users/{{userId}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"users",
+										"{{userId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "New Request",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/users?userName=Testovkasd",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"users"
+									],
+									"query": [
+										{
+											"key": "userName",
+											"value": "Testovkasd"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "DELETE USER TWICE",
+					"item": [
+						{
+							"name": "Delete user for test",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 204\", function () {\r",
+											"    pm.response.to.have.status(204);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/users/{{userIds}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"users",
+										"{{userIds}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Can't delete the same user twice",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/users/{{userIds}}",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"users",
+										"{{userIds}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

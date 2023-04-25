@@ -1,0 +1,8 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/back/DailyDiary/obj/Debug/net5.0/DailyDiary.csprojAssemblyReference.cache
+
+development.yml
+front/public/runtime-config.json

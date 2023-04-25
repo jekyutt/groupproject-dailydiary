@@ -1,0 +1,63 @@
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: "/certs"
+
+stages:
+  - build
+  - api_test
+  - deploy
+
+build:
+  image: docker:20.10.5
+  services:
+    - docker:20.10.5-dind
+  only:
+    - master
+  before_script:
+    - docker info
+    - docker login ${ITB1704_REGISTRY} -u ${ITB1704_REGISTRY_USER} -p ${ITB1704_REGISTRY_PASSWORD}
+  script:
+    - docker build -t ${ITB1704_REGISTRY}/${ITB1704_REGISTRY_USER}/back-end:${CI_COMMIT_SHA} ./back/
+    - docker build -t ${ITB1704_REGISTRY}/${ITB1704_REGISTRY_USER}/front-end:${CI_COMMIT_SHA} ./front/
+    - docker push ${ITB1704_REGISTRY}/${ITB1704_REGISTRY_USER}/back-end:${CI_COMMIT_SHA}
+    - docker push ${ITB1704_REGISTRY}/${ITB1704_REGISTRY_USER}/front-end:${CI_COMMIT_SHA}
+  after_script:
+    - docker logout ${ITB1704_REGISTRY}
+  stage: build
+  tags:
+    - itb1704
+
+api_test:
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_TLS_CERTDIR: ""
+  image:
+    name: docker/compose:1.28.6
+    entrypoint: ["/bin/sh", "-c"]
+  services:
+    - docker:20.10.5-dind
+  only:
+    - master
+  before_script:
+    - docker info
+    - docker login ${ITB1704_REGISTRY} -u ${ITB1704_REGISTRY_USER} -p ${ITB1704_REGISTRY_PASSWORD}
+  script:
+    - cd tests
+    - docker-compose up --abort-on-container-exit --exit-code-from newman
+    - docker-compose down -v
+  after_script:
+    - docker logout ${ITB1704_REGISTRY}
+  stage: api_test
+  tags:
+    - itb1704
+
+deploy:
+  image: deploy:1.0
+  when: manual
+  script:
+    - /deploy.sh
+    # kui vaja kõik volumes ära kustutada
+    #- /deploy.sh --delete-volumes
+  stage: deploy
+  tags:
+    - itb1704
